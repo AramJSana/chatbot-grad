@@ -1,7 +1,8 @@
 import streamlit as st
 import os
 from openai import OpenAI
-from databricks.sdk import WorkspaceClient
+
+MODEL = "databricks-gpt-oss-120b"
 
 DB_TOKEN = os.environ.get('DB-TOKEN')
 
@@ -32,8 +33,9 @@ if prompt:
         st.markdown(prompt)
 
     response = client.chat.completions.create(
-        model=MODEL,
         messages=st.session_state.messages,
+        model=MODEL
+        max_tokens=1024
     )
 
     assistant_replied = (response.choices[0].message.content)
