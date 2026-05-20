@@ -1,11 +1,13 @@
+import streamlit as st
 import os
-import json
-from openai import OpenAI
+from openai import AzureOpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
-current_workspace = f'https://{spark.conf.get("spark.databricks.workspaceUrl")}'
+MODEL = "gpt-4o"
 
-DATABRICKS_TOKEN = dbutils.secrets.get(scope="dbrickstoken", key="dbrickstoken")
-DATABRICKS_BASE_URL = f'{current_workspace}/serving-endpoints'
-
+client = AzureOpenAI(
+    api_key         = os.environ["AZURE_OPENAI_API_KEY"],
+    api_version     = "2025-04-01-preview",
+    azure_endpoint  = "https://ai-proxy.lab.epam.com"
+)
