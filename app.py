@@ -39,7 +39,7 @@ if prompt:
     )
 
     if "messages" in res:
-        return res["messages"]
+        assistant_replied = res.messages
     elif "choices" in res:
         choice_message = res.choices[0].message
         assistant_replied = choice_message.get("content")
