@@ -1,5 +1,5 @@
 command: ['streamlit', 'run', 'app.py']
 
 env:
-  - name: DIAL_KEY
+  - name: DB-TOKEN
     valueFrom: secret

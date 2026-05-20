@@ -3,10 +3,12 @@ import os
 from openai import AzureOpenAI
 from databricks.sdk import WorkspaceClient
 
-MODEL = "databricks-gpt-oss-120b"
+DB_TOKEN = os.environ.get('DB-TOKEN')
 
-w = WorkspaceClient()
-openai_client = w.serving_endpoints.get_open_ai_client()
+client = OpenAI(
+  api_key=DB_TOKEN,
+  base_url="https://dbc-9fa0f090-1c91.cloud.databricks.com/ai-gateway/mlflow/v1"
+)
 
 st.title("Chatbot with SQL capabilities")
 
