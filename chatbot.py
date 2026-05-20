@@ -1,8 +1,6 @@
 import streamlit as st
 import os
 from openai import AzureOpenAI
-from dotenv import load_dotenv
-load_dotenv()
 
 MODEL = "gpt-4o"
 
