@@ -32,18 +32,22 @@ if prompt:
     with st.chat_message("user"):
         st.markdown(prompt)
 
-    response = client.chat.completions.create(
+    res = client.chat.completions.create(
         messages=st.session_state.messages,
         model=MODEL,
         max_tokens=1024
     )
 
+    if "messages" in res:
+        return res["messages"]
+    elif "choices" in res:
+        choice_message = res.choices[0].message
+        assistant_replied = choice_message.get("content")
 
-    assistant_replied = (response.choices[0].message.content)
     if isinstance(assistant_replied, list):
         combined_content = "".join([part.get("text", "") for part in assistant_replied if part.get("type") == "text"])
         reformatted_message = {
-            "role": assistant_replied.get("role"),
+            "role": choice_message.get("role"),
             "content": combined_content
         }
         assistant_replied = reformatted_message["content"]
