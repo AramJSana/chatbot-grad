@@ -1,3 +1,5 @@
+command: ['streamlit', 'run', 'app.py']
+
 env:
   - name: DIAL_KEY
     valueFrom: secret

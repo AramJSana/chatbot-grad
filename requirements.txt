@@ -1,2 +1,5 @@
 openai
+databricks-sdk
+databricks-sql-connector
 streamlit
+pandas
