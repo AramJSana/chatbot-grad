@@ -35,24 +35,22 @@ if prompt:
     res = client.chat.completions.create(
         messages=st.session_state.messages,
         model=MODEL,
-        max_tokens=1024
+        max_tokens=1024,
     )
 
-    if "messages" in res:
-        assistant_replied = res.messages
-    elif "choices" in res:
-        choice_message = res.choices[0].message
-        assistant_replied = choice_message.get("content")
+    # OpenAI SDK returns a ChatCompletion object — use attributes
+    choice_message = res.choices[0].message
+    assistant_replied = choice_message.content
 
+    # Some gateways return content as a list of parts instead of a string
     if isinstance(assistant_replied, list):
-        combined_content = "".join([part.get("text", "") for part in assistant_replied if part.get("type") == "text"])
-        reformatted_message = {
-            "role": choice_message.get("role"),
-            "content": combined_content
-        }
-        assistant_replied = reformatted_message["content"]
-    # The response from the LLM will is added to the chat history
+        assistant_replied = "".join(
+            part.get("text", "")
+            for part in assistant_replied
+            if isinstance(part, dict) and part.get("type") == "text"
+        )
+
+    # Save and display
     st.session_state.messages.append({"role": "assistant", "content": assistant_replied})
-    # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(assistant_replied)
