@@ -34,7 +34,7 @@ if prompt:
 
     response = client.chat.completions.create(
         messages=st.session_state.messages,
-        model=MODEL
+        model=MODEL,
         max_tokens=1024
     )
 
