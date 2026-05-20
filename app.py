@@ -38,7 +38,15 @@ if prompt:
         max_tokens=1024
     )
 
+
     assistant_replied = (response.choices[0].message.content)
+    if isinstance(assistant_replied, list):
+        combined_content = "".join([part.get("text", "") for part in assistant_replied if part.get("type") == "text"])
+        reformatted_message = {
+            "role": assistant_replied.get("role"),
+            "content": combined_content
+        }
+        assistant_replied = reformatted_message["content"]
     # The response from the LLM will is added to the chat history
     st.session_state.messages.append({"role": "assistant", "content": assistant_replied})
     # Display assistant response in chat message container
