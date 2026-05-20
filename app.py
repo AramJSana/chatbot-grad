@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from openai import AzureOpenAI
+from openai import OpenAI
 from databricks.sdk import WorkspaceClient
 
 DB_TOKEN = os.environ.get('DB-TOKEN')
