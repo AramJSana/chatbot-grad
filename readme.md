@@ -1,0 +1,1 @@
+A simple chatbot using API calls, function calling and SQL integration with Databricks.
