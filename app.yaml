@@ -1,0 +1,10 @@
+name: chatbot-grad
+resources:
+  - name: dial-key
+    secret: 
+      scope: "dbrickstoken"
+      key: "dialtoken"
+
+config:
+  openai_api_key:
+    valueFrom: dial-key
