@@ -1,16 +1,12 @@
 import streamlit as st
 import os
 from openai import AzureOpenAI
+from databricks.sdk import WorkspaceClient
 
-MODEL = "gpt-4o"
+MODEL = "databricks-gpt-oss-120b"
 
-print(os.getenv('DIAL_KEY'))
-
-client = AzureOpenAI(
-    api_key         = os.getenv("DIAL_KEY"),
-    api_version     = "2025-04-01-preview",
-    azure_endpoint  = "https://ai-proxy.lab.epam.com"
-)
+w = WorkspaceClient()
+openai_client = w.serving_endpoints.get_open_ai_client()
 
 st.title("Chatbot with SQL capabilities")
 
