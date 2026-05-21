@@ -100,7 +100,3 @@ def sql_query(query, cursor):
         return results
     except Exception as e:
         return f"Error executing query: {e}"
-
-
-if __name__ == "__main__":
-    main()
