@@ -3,3 +3,6 @@ command: ['streamlit', 'run', 'app.py']
 env:
   - name: DB-TOKEN
     valueFrom: secret
+
+  - name: SQL-TOKEN
+    valueFrom: secret-2
