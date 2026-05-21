@@ -3,4 +3,3 @@ databricks-sdk
 databricks-sql-connector
 streamlit
 pandas
-json
