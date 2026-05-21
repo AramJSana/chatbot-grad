@@ -12,11 +12,13 @@ def main() -> None:
 
     client = get_openai_client()
 
+    with open("systemprompt.md", "r") as file:
+        system_prompt = file.read()
+
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "system",
-             "content": "You are a helpful assistant with access to a SQL warehouse. "
-                        "Use the sql_query tool when the user asks about data."}
+             "content": system_prompt}
         ]
 
     for m in st.session_state.messages:
@@ -77,7 +79,7 @@ def main() -> None:
         with st.chat_message("assistant"):
             st.markdown(content)
         break
-    
+
 
 # Using streamlit decorator to cache as to not run them every time
 @st.cache_resource
