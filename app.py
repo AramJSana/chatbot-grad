@@ -12,7 +12,7 @@ MAX_ROWS_TO_LLM = 50
 SQL_RETRY_ATTEMPTS = 2
 
 DATABRICKS_HOST = "dbc-9fa0f090-1c91.cloud.databricks.com"
-SQL_HTTP_PATH = "/sql/1.0/warehouses/89b5917496df409a"
+SQL_HOST = "/sql/1.0/warehouses/89b5917496df409a"
 
 TOOLS = [
     {
@@ -40,25 +40,15 @@ def main() -> None:
 
     client = get_openai_client()
 
-    
     if "_system_prompt" not in st.session_state:
         with open("systemprompt.md", "r") as f:
             st.session_state["_system_prompt"] = f.read()
 
-    # message history
+    # Message history
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "system", "content": st.session_state["_system_prompt"]}
         ]
-
-    # Sidebar: reset button
-    with st.sidebar:
-        if st.button("Clear conversation"):
-            st.session_state.messages = [
-                {"role": "system", "content": st.session_state["_system_prompt"]}
-            ]
-            reset_sql_connection()
-            st.rerun()
 
     # Render chat
     for m in st.session_state.messages:
@@ -70,7 +60,7 @@ def main() -> None:
             st.markdown(m["content"])
 
     
-    prompt = st.chat_input("How can I help you?")
+    prompt = st.chat_input("How can I help?")
     if not prompt:
         return
 
@@ -87,7 +77,7 @@ def main() -> None:
 def get_openai_client() -> OpenAI:
     token = os.getenv("DB-TOKEN")
     if not token:
-        st.error("Couldn't retrieve OpenAI token (env var `DB-TOKEN`).")
+        st.error("Couldn't retrieve OpenAI token.")
         st.stop()
     return OpenAI(
         api_key=token,
@@ -98,26 +88,25 @@ def get_openai_client() -> OpenAI:
 def open_sql_connection():
     token = os.getenv("SQL-TOKEN")
     if not token:
-        st.error("Couldn't retrieve SQL token (env var `SQL-TOKEN`).")
+        st.error("Couldn't retrieve SQL token.")
         st.stop()
     return sql.connect(
         server_hostname=DATABRICKS_HOST,
-        http_path=SQL_HTTP_PATH,
+        http_path=SQL_HOST,
         access_token=token,
     )
 
 
 def get_sql_connection():
-    connection = st.session_state.get("_sql_conn")
+    connection = st.session_state.get("_sql_connection")
     if connection is None:
         connection = open_sql_connection()
-        st.session_state["_sql_conn"] = connection
+        st.session_state["_sql_connection"] = connection
     return connection
 
 
 def reset_sql_connection() -> None:
-    """Drop the cached SQL connection so the next call reconnects."""
-    connection = st.session_state.pop("_sql_conn", None)
+    connection = st.session_state.pop("_sql_connection", None)
     if connection is not None:
         try:
             connection.close()
@@ -183,7 +172,7 @@ def run_agent(client: OpenAI, placeholder) -> None:
                 args = json.loads(tc.function.arguments or "{}")
                 if tc.function.name == "sql_query":
                     query = args.get("query", "")
-                    with st.expander(f"🔎 SQL (step {step + 1})", expanded=False):
+                    with st.expander(f"SQL (step {step + 1})", expanded=False):
                         st.code(query, language="sql")
                     with st.spinner("Running SQL on the warehouse…"):
                         result = sql_query(query)
@@ -215,8 +204,7 @@ def run_agent(client: OpenAI, placeholder) -> None:
         return
 
     placeholder.error(
-        f"Agent reached the step limit without producing a final "
-        "answer. Please try again."
+        f"Reached the step limit without producing a final answer. Please try again."
     )
 
 
