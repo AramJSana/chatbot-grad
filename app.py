@@ -3,7 +3,7 @@ import os
 from openai import OpenAI
 from databricks import sql
 
-def main():
+def main() -> None:
 
     MODEL = "databricks-gpt-oss-120b"
 
@@ -100,3 +100,5 @@ def sql_query(query, cursor):
         return results
     except Exception as e:
         return f"Error executing query: {e}"
+    
+main()
